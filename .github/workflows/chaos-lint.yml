@@ -1,0 +1,29 @@
+name: Chaos Lint & Validate
+
+on:
+  pull_request:
+    paths:
+      - 'chaos-playbook/**/*.yaml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install kubeval & yamllint
+        run: |
+          curl -sL https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz \
+            | tar xz && sudo mv kubeval /usr/local/bin/
+          sudo apt-get update && sudo apt-get install -y yamllint
+
+      - name: Lint YAML
+        run: yamllint -c .yamllint.yaml chaos-playbook/
+
+      - name: Validate Kubernetes CRDs
+        run: kubeval --strict --directory chaos-playbook/
+
+      - name: Chaos-Portal Lint (optional)
+        run: |
+          # your custom chaos-lint tool
+          chaos-lint chaos-playbook/

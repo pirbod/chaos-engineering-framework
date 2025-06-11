@@ -1,0 +1,11 @@
+apiVersion: chaos.litmus.io/v1alpha1
+kind: DiskChaos
+metadata:
+  name: disk-fill
+spec:
+  action: fill
+  volumePath: "/"
+  fillPercent: 80
+  duration: "45s"
+  selector:
+    namespaces: ["default"]
