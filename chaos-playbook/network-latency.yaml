@@ -1,0 +1,13 @@
+apiVersion: chaos.litmus.io/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: network-latency
+spec:
+  action: delay
+  mode: one
+  selector:
+    namespaces: ["default"]
+    labelSelectors:
+      "app": "my-service"
+  delay: "100ms"
+  duration: "30s"

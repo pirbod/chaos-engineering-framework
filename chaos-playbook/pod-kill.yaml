@@ -1,0 +1,12 @@
+apiVersion: chaos.litmus.io/v1alpha1
+kind: PodChaos
+metadata:
+  name: pod-kill
+spec:
+  action: pod-kill
+  mode: all
+  selector:
+    namespaces: ["default"]
+    labelSelectors:
+      "app": "my-service"
+  duration: "60s"
