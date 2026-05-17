@@ -44,4 +44,5 @@ curl http://localhost:8080/healthz
 curl http://localhost:8080/api/experiments
 curl http://localhost:8080/api/services
 curl http://localhost:8080/api/services/payments-api/risk
+curl http://localhost:8080/api/approvals/requests
 ```

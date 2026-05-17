@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/pirbod/chaos-engineering-framework/backend/internal/ai"
+	"github.com/pirbod/chaos-engineering-framework/backend/internal/approvals"
 	"github.com/pirbod/chaos-engineering-framework/backend/internal/experiments"
 	"github.com/pirbod/chaos-engineering-framework/backend/internal/integrations"
 	"github.com/pirbod/chaos-engineering-framework/backend/internal/observability"
@@ -18,6 +19,7 @@ import (
 
 type Server struct {
 	store    store.Store
+	approvals *approvals.Store
 	ai       ai.Provider
 	metrics  *observability.Recorder
 	version  string
@@ -32,11 +34,12 @@ func NewRouter(data store.Store, provider ai.Provider, metrics *observability.Re
 		logger = slog.Default()
 	}
 	s := &Server{
-		store:   data,
-		ai:      provider,
-		metrics: metrics,
-		version: version,
-		logger:  logger,
+		store:     data,
+		approvals: approvals.NewStore(),
+		ai:        provider,
+		metrics:   metrics,
+		version:   version,
+		logger:    logger,
 	}
 
 	mux := http.NewServeMux()
@@ -52,6 +55,8 @@ func NewRouter(data store.Store, provider ai.Provider, metrics *observability.Re
 	mux.HandleFunc("/api/runbooks", s.handleRunbooks)
 	mux.HandleFunc("/api/runbooks/", s.handleRunbookDetail)
 	mux.HandleFunc("/api/ai/summarize", s.handleAISummary)
+	mux.HandleFunc("/api/approvals/requests", s.handleApprovalRequests)
+	mux.HandleFunc("/api/approvals/requests/", s.handleApprovalDecision)
 	mux.HandleFunc("/api/integrations", s.handleIntegrations)
 
 	return withCORS(withLogging(logger, metrics.Middleware(mux)))
@@ -223,6 +228,58 @@ func (s *Server) handleIntegrations(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, integrations.Statuses())
 }
 
+func (s *Server) handleApprovalRequests(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		items, err := s.approvals.List(r.Context())
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to list approval requests")
+			return
+		}
+		writeJSON(w, http.StatusOK, items)
+	case http.MethodPost:
+		defer r.Body.Close()
+		var input approvals.RequestInput
+		if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+			writeError(w, http.StatusBadRequest, "invalid approval request body")
+			return
+		}
+		request, err := s.approvals.Create(r.Context(), input)
+		if err != nil {
+			writeApprovalError(w, err, "approval request failed")
+			return
+		}
+		writeJSON(w, http.StatusCreated, request)
+	default:
+		w.Header().Set("Allow", "GET,POST")
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleApprovalDecision(w http.ResponseWriter, r *http.Request) {
+	if !requireMethod(w, r, http.MethodPost) {
+		return
+	}
+	path := strings.TrimPrefix(r.URL.Path, "/api/approvals/requests/")
+	id := strings.TrimSuffix(path, "/decision")
+	if id == path {
+		writeError(w, http.StatusNotFound, "approval route not found")
+		return
+	}
+	defer r.Body.Close()
+	var input approvals.DecisionInput
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid approval decision body")
+		return
+	}
+	request, err := s.approvals.Decide(r.Context(), strings.TrimSuffix(id, "/"), input)
+	if err != nil {
+		writeApprovalError(w, err, "approval decision failed")
+		return
+	}
+	writeJSON(w, http.StatusOK, request)
+}
+
 func requireMethod(w http.ResponseWriter, r *http.Request, allowed string) bool {
 	if r.Method == allowed {
 		return true
@@ -238,6 +295,19 @@ func writeStoreError(w http.ResponseWriter, err error, fallback string) {
 		return
 	}
 	writeError(w, http.StatusInternalServerError, "catalog lookup failed")
+}
+
+func writeApprovalError(w http.ResponseWriter, err error, fallback string) {
+	switch {
+	case errors.Is(err, approvals.ErrNotFound):
+		writeError(w, http.StatusNotFound, "approval request not found")
+	case errors.Is(err, approvals.ErrInvalid):
+		writeError(w, http.StatusBadRequest, fallback)
+	case errors.Is(err, approvals.ErrTransition):
+		writeError(w, http.StatusConflict, "approval request already decided")
+	default:
+		writeError(w, http.StatusInternalServerError, fallback)
+	}
 }
 
 func writeJSON(w http.ResponseWriter, status int, value any) {

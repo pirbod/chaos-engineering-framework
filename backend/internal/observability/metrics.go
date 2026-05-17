@@ -143,6 +143,8 @@ func normalizePath(path string) string {
 		return "/api/services/{id}"
 	case strings.HasPrefix(path, "/api/runbooks/"):
 		return "/api/runbooks/{id}"
+	case strings.HasPrefix(path, "/api/approvals/requests/") && strings.HasSuffix(path, "/decision"):
+		return "/api/approvals/requests/{id}/decision"
 	default:
 		return path
 	}

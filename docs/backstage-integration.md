@@ -18,5 +18,6 @@ Backstage should expose:
 - runbook links
 - SLO and dashboard links
 - maturity score and risk factors
+- approval requests for high and critical blast radius tests
 
 The plugin skeleton is lightweight by design. Teams can embed it into an internal Backstage app and call the Go API.

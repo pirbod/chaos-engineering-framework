@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: Platform Chaos Reliability Hub API
+  version: 0.2.0
+  description: REST API for chaos experiment catalog, service risk, approval requests, runbooks, integrations and incident summaries.
+servers:
+  - url: http://localhost:8080
+paths:
+  /healthz:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: API is healthy
+  /readyz:
+    get:
+      summary: Readiness check
+      responses:
+        "200":
+          description: Catalog is ready
+  /version:
+    get:
+      summary: Version metadata
+      responses:
+        "200":
+          description: API version and AI provider
+  /api/experiments:
+    get:
+      summary: List chaos experiments
+      responses:
+        "200":
+          description: Experiment catalog
+  /api/experiments/{id}:
+    get:
+      summary: Get experiment detail
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Experiment detail
+        "404":
+          description: Experiment not found
+  /api/services:
+    get:
+      summary: List services
+      responses:
+        "200":
+          description: Service catalog
+  /api/services/{id}/risk:
+    get:
+      summary: Calculate service risk
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Deterministic service risk score
+  /api/runbooks:
+    get:
+      summary: List runbooks
+      responses:
+        "200":
+          description: Runbook catalog
+  /api/runbooks/{id}:
+    get:
+      summary: Get runbook detail
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          description: Runbook detail
+  /api/approvals/requests:
+    get:
+      summary: List approval requests
+      responses:
+        "200":
+          description: Approval requests
+    post:
+      summary: Create approval request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApprovalRequestInput"
+      responses:
+        "201":
+          description: Approval request created
+        "400":
+          description: Missing required guardrails
+  /api/approvals/requests/{id}/decision:
+    post:
+      summary: Approve or reject a pending request
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApprovalDecisionInput"
+      responses:
+        "200":
+          description: Approval decision recorded
+        "409":
+          description: Request already decided
+  /api/ai/summarize:
+    post:
+      summary: Generate deterministic incident summary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AISummaryInput"
+      responses:
+        "200":
+          description: Incident summary
+  /api/integrations:
+    get:
+      summary: List integration status
+      responses:
+        "200":
+          description: Integration statuses with optional live health probe results
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      responses:
+        "200":
+          description: Metrics in Prometheus text format
+components:
+  parameters:
+    ID:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    ApprovalRequestInput:
+      type: object
+      required: [experimentId, serviceId, requestedBy, riskScore]
+      properties:
+        experimentId:
+          type: string
+        serviceId:
+          type: string
+        requestedBy:
+          type: string
+        riskScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        riskLevel:
+          type: string
+        blastRadius:
+          type: string
+        rollbackThreshold:
+          type: string
+        runbookId:
+          type: string
+        evidenceLinks:
+          type: array
+          items:
+            type: string
+    ApprovalDecisionInput:
+      type: object
+      required: [decision, approver]
+      properties:
+        decision:
+          type: string
+          enum: [approved, rejected]
+        approver:
+          type: string
+        comment:
+          type: string
+    AISummaryInput:
+      type: object
+      required: [experimentName, affectedService, riskScore]
+      properties:
+        experimentName:
+          type: string
+        affectedService:
+          type: string
+        metricsSnapshot:
+          type: object
+          additionalProperties:
+            type: string
+        logsOrEvents:
+          type: array
+          items:
+            type: string
+        riskScore:
+          type: integer

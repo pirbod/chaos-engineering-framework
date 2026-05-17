@@ -97,3 +97,26 @@ func TestAISummaryAPI(t *testing.T) {
 		t.Fatalf("expected summary response, got %s", rr.Body.String())
 	}
 }
+
+func TestApprovalRequestAPI(t *testing.T) {
+	body := bytes.NewBufferString(`{
+		"experimentId":"node-drain",
+		"serviceId":"payments-api",
+		"requestedBy":"dev@example.com",
+		"riskScore":91,
+		"riskLevel":"critical",
+		"blastRadius":"critical",
+		"runbookId":"failed-chaos-experiment",
+		"rollbackThreshold":"abort if 5xx exceeds 2% for two minutes"
+	}`)
+	rr := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodPost, "/api/approvals/requests", body)
+	testServer().ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusCreated {
+		t.Fatalf("expected 201, got %d: %s", rr.Code, rr.Body.String())
+	}
+	if !strings.Contains(rr.Body.String(), "requiredApprovers") {
+		t.Fatalf("expected approval guardrails, got %s", rr.Body.String())
+	}
+}

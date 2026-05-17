@@ -9,6 +9,7 @@ The platform team owns guardrails, reusable experiments, integration patterns an
 3. Approve only experiments with clear blast radius and rollback thresholds.
 4. Review MTTD trend and noisy alerts after each experiment.
 5. Convert repeated findings into templates, docs or automated checks.
+6. Use approval requests to capture decisions for high and critical blast radius tests.
 
 ## Approval Checklist
 

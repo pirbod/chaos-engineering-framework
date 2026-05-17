@@ -84,6 +84,9 @@ docker-compose up --build
 | `GET /api/services/{id}/risk` | deterministic service risk |
 | `GET /api/runbooks` | runbook list |
 | `GET /api/runbooks/{id}` | runbook detail |
+| `GET /api/approvals/requests` | approval request list |
+| `POST /api/approvals/requests` | create high/critical experiment approval |
+| `POST /api/approvals/requests/{id}/decision` | approve or reject request |
 | `POST /api/ai/summarize` | deterministic incident summary |
 | `GET /api/integrations` | optional integration status |
 | `GET /metrics` | Prometheus metrics |
@@ -161,8 +164,8 @@ scripts/       Demo and validation helpers
 - Replace embedded sample data with SQLite or Postgres behind the existing store interface.
 - Add authenticated approval workflow for critical blast radius experiments.
 - Push Datadog events from the backend when a real API key is configured.
-- Query GitLab and Vault health live with short timeouts and clear degraded states.
-- Add OpenAPI generation and a published Backstage plugin package.
+- Persist approvals and catalog data in SQLite/Postgres.
+- Publish the Backstage plugin package to an internal registry.
 
 ## Contributing
 

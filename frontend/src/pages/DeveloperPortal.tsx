@@ -1,7 +1,7 @@
 const workflows = [
   {
     title: 'Request a chaos experiment',
-    items: ['Pick an approved experiment from the catalog.', 'Confirm owner, SLO and rollback threshold.', 'Open a pull request with the manifest and runbook link.'],
+    items: ['Pick an approved experiment from the catalog.', 'Confirm owner, SLO and rollback threshold.', 'Create an approval request when risk is high or critical.'],
   },
   {
     title: 'Onboard a service',
@@ -14,6 +14,10 @@ const workflows = [
   {
     title: 'Reduce MTTD',
     items: ['Tag chaos events by service and risk.', 'Use SLO burn alerts and runbook links.', 'Capture AI summaries for incident handoff.'],
+  },
+  {
+    title: 'Approve critical blast radius',
+    items: ['Review required approvers and guardrails.', 'Reject requests without rollback evidence.', 'Record the decision before GitOps execution.'],
   },
 ];
 
