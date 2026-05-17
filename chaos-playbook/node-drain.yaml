@@ -1,0 +1,24 @@
+apiVersion: chaos.litmus.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: node-drain-payments-api
+  namespace: litmus
+  labels:
+    platform-chaos-hub/experiment: node-drain
+spec:
+  appinfo:
+    appns: payments
+    applabel: app=payments-api
+    appkind: deployment
+  chaosServiceAccount: litmus-admin
+  experiments:
+    - name: node-drain
+      spec:
+        components:
+          env:
+            - name: TOTAL_CHAOS_DURATION
+              value: "180"
+            - name: NODE_LABEL
+              value: "chaos-ready=true"
+            - name: FORCE
+              value: "false"

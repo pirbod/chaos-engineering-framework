@@ -1,0 +1,24 @@
+apiVersion: chaos.litmus.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: cpu-hog-checkout-api
+  namespace: litmus
+  labels:
+    platform-chaos-hub/experiment: cpu-hog
+spec:
+  appinfo:
+    appns: default
+    applabel: app=checkout-api
+    appkind: deployment
+  chaosServiceAccount: litmus-admin
+  experiments:
+    - name: pod-cpu-hog
+      spec:
+        components:
+          env:
+            - name: TOTAL_CHAOS_DURATION
+              value: "120"
+            - name: CPU_CORES
+              value: "1"
+            - name: PODS_AFFECTED_PERC
+              value: "25"

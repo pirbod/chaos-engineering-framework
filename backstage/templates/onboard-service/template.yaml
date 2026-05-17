@@ -1,0 +1,44 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: onboard-service-to-chaos-hub
+  title: Onboard service to chaos testing
+  description: Adds ownership, SLO, runbook and first safe experiment metadata.
+spec:
+  owner: group:platform-engineering
+  type: service
+  parameters:
+    - title: Service metadata
+      required:
+        - serviceId
+        - owner
+        - slo
+      properties:
+        serviceId:
+          title: Service ID
+          type: string
+        owner:
+          title: Owning team email
+          type: string
+        slo:
+          title: Primary SLO
+          type: string
+        firstExperiment:
+          title: First experiment
+          type: string
+          enum: [pod-kill, network-latency, cpu-hog, memory-hog]
+  steps:
+    - id: fetch
+      name: Fetch skeleton
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          serviceId: ${{ parameters.serviceId }}
+          owner: ${{ parameters.owner }}
+          slo: ${{ parameters.slo }}
+          firstExperiment: ${{ parameters.firstExperiment }}
+  output:
+    text:
+      - title: Next step
+        content: Open a pull request with the generated catalog and experiment metadata.

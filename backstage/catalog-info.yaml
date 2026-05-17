@@ -1,0 +1,54 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: platform-chaos-reliability-hub
+  title: Platform Chaos Reliability Hub
+  description: Developer entry point for safe resilience experiments, risk scoring, runbooks and observability.
+  annotations:
+    github.com/project-slug: pirbod/chaos-engineering-framework
+    backstage.io/techdocs-ref: dir:..
+    grafana/dashboard-selector: platform-chaos-hub
+    datadoghq.com/dashboard-url: https://app.datadoghq.com/dashboard/platform-chaos-hub
+  tags:
+    - platform
+    - chaos-engineering
+    - reliability
+    - gitops
+spec:
+  type: service
+  lifecycle: experimental
+  owner: group:platform-engineering
+  system: platform-reliability
+  providesApis:
+    - platform-chaos-hub-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: platform-chaos-hub-api
+  description: REST API for experiment catalog, service risk, integrations and AI incident summaries.
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: group:platform-engineering
+  definition: |
+    openapi: 3.0.3
+    info:
+      title: Platform Chaos Hub API
+      version: 0.1.0
+    paths:
+      /healthz:
+        get:
+          responses:
+            "200":
+              description: Healthy
+      /api/experiments:
+        get:
+          responses:
+            "200":
+              description: Experiment catalog
+      /api/services/{id}/risk:
+        get:
+          responses:
+            "200":
+              description: Service risk score

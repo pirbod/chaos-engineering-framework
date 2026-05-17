@@ -1,0 +1,25 @@
+{
+  "monitors": [
+    {
+      "name": "Platform Chaos - High Failure Rate",
+      "type": "query alert",
+      "query": "avg(last_15m):sum:platform.chaos.experiment.failure_rate{env:demo} > 0.25",
+      "message": "Chaos experiment failure rate is above 25%. Review failed-chaos-experiment runbook.",
+      "tags": ["team:platform-engineering", "service:platform-chaos-hub", "signal:mttd"]
+    },
+    {
+      "name": "Platform Chaos - Critical Risk Service",
+      "type": "query alert",
+      "query": "max(last_5m):max:platform.chaos.service.risk_score{risk_level:critical} >= 80",
+      "message": "Critical service risk score detected during chaos planning or execution.",
+      "tags": ["team:platform-engineering", "service:platform-chaos-hub", "risk_level:critical"]
+    }
+  ],
+  "event_tag_mapping": {
+    "riskScore": "risk_score:<score>",
+    "riskLevel": "risk_level:<low|medium|high|critical>",
+    "experimentOutcome": "experiment_outcome:<passed|failed|partial>",
+    "experimentId": "experiment_id:<id>",
+    "service": "service:<service-id>"
+  }
+}

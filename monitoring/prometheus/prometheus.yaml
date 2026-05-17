@@ -2,6 +2,12 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
+  - job_name: 'platform-chaos-hub'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - 'backend:8080'
+
   - job_name: 'litmus'
     kubernetes_sd_configs:
       - role: pod

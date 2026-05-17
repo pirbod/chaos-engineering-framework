@@ -1,0 +1,11 @@
+Platform Chaos Reliability Hub has been installed.
+
+Backend service:
+  {{ include "platform-chaos-hub.fullname" . }}-backend:{{ .Values.backend.port }}
+
+Frontend service:
+  {{ include "platform-chaos-hub.fullname" . }}-frontend:{{ .Values.frontend.port }}
+
+Port-forward locally:
+  kubectl port-forward svc/{{ include "platform-chaos-hub.fullname" . }}-frontend 5173:{{ .Values.frontend.port }}
+  kubectl port-forward svc/{{ include "platform-chaos-hub.fullname" . }}-backend 8080:{{ .Values.backend.port }}

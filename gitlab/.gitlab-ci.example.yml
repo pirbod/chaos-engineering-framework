@@ -1,0 +1,55 @@
+stages:
+  - lint
+  - test
+  - security
+  - package
+
+variables:
+  GO_VERSION: "1.22"
+  NODE_VERSION: "20"
+
+go:test:
+  image: golang:${GO_VERSION}
+  stage: test
+  script:
+    - cd backend
+    - go test ./...
+
+frontend:test:
+  image: node:${NODE_VERSION}
+  stage: test
+  script:
+    - cd frontend
+    - npm install
+    - npm run lint
+    - npm test
+
+terraform:fmt:
+  image: hashicorp/terraform:1.9
+  stage: lint
+  script:
+    - terraform -chdir=terraform fmt -check -recursive
+
+helm:lint:
+  image: alpine/helm:3.15.4
+  stage: lint
+  script:
+    - helm lint helm/platform-chaos-hub
+    - helm template platform-chaos-hub helm/platform-chaos-hub >/tmp/platform-chaos-hub.yaml
+
+security:filesystem:
+  image: aquasec/trivy:0.56.2
+  stage: security
+  script:
+    - trivy fs --exit-code 0 --severity HIGH,CRITICAL .
+
+package:containers:
+  image: docker:27
+  stage: package
+  services:
+    - docker:27-dind
+  script:
+    - docker build -t platform-chaos-hub-backend:${CI_COMMIT_SHORT_SHA} -f backend/Dockerfile backend
+    - docker build -t platform-chaos-hub-frontend:${CI_COMMIT_SHORT_SHA} -f frontend/Dockerfile frontend
+  rules:
+    - if: $CI_COMMIT_BRANCH

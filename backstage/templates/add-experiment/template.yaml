@@ -1,0 +1,40 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: add-chaos-experiment
+  title: Add a chaos experiment
+  description: Creates a pull-request-ready experiment manifest with safety notes and runbook links.
+spec:
+  owner: group:platform-engineering
+  type: service
+  parameters:
+    - title: Experiment request
+      required:
+        - experimentId
+        - targetService
+        - blastRadius
+        - runbook
+      properties:
+        experimentId:
+          title: Experiment ID
+          type: string
+        targetService:
+          title: Target service
+          type: string
+        blastRadius:
+          title: Blast radius
+          type: string
+          enum: [low, medium, high, critical]
+        runbook:
+          title: Runbook ID
+          type: string
+  steps:
+    - id: review
+      name: Review guardrails
+      action: debug:log
+      input:
+        message: "Create manifest for ${{ parameters.experimentId }} targeting ${{ parameters.targetService }} with ${{ parameters.blastRadius }} blast radius."
+  output:
+    text:
+      - title: Guardrail
+        content: Critical experiments require owner acknowledgement, SLO burn alerting and rollback threshold evidence.

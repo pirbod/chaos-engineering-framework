@@ -1,0 +1,20 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: service-latency-gitlab-runners
+  namespace: litmus
+  labels:
+    platform-chaos-hub/experiment: service-latency
+spec:
+  action: delay
+  mode: one
+  selector:
+    namespaces:
+      - gitlab-runners
+    labelSelectors:
+      app: runner
+  delay:
+    latency: 400ms
+    correlation: "25"
+    jitter: 60ms
+  duration: 60s

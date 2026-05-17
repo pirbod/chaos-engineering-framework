@@ -1,0 +1,6 @@
+{
+  "name": "@internal/plugin-platform-chaos-hub",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Lightweight Backstage page skeleton for Platform Chaos Reliability Hub."
+}

@@ -1,0 +1,25 @@
+name: Helm
+
+on:
+  pull_request:
+    paths:
+      - "helm/**"
+      - ".github/workflows/helm.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "helm/**"
+
+jobs:
+  lint-template:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.15.4
+      - name: Lint
+        run: helm lint helm/platform-chaos-hub
+      - name: Template
+        run: helm template platform-chaos-hub helm/platform-chaos-hub >/tmp/platform-chaos-hub.yaml

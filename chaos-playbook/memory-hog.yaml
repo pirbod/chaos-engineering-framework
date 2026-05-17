@@ -1,0 +1,24 @@
+apiVersion: chaos.litmus.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: memory-hog-recommendations
+  namespace: litmus
+  labels:
+    platform-chaos-hub/experiment: memory-hog
+spec:
+  appinfo:
+    appns: default
+    applabel: app=recommendations
+    appkind: deployment
+  chaosServiceAccount: litmus-admin
+  experiments:
+    - name: pod-memory-hog
+      spec:
+        components:
+          env:
+            - name: TOTAL_CHAOS_DURATION
+              value: "90"
+            - name: MEMORY_CONSUMPTION
+              value: "256"
+            - name: PODS_AFFECTED_PERC
+              value: "20"

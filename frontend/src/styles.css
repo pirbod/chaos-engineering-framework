@@ -1,0 +1,500 @@
+:root {
+  color: #162029;
+  background: #f6f7f9;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+a {
+  color: #236192;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: #101820;
+  color: #f8fafc;
+  padding: 24px 18px;
+}
+
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid #5eead4;
+  color: #5eead4;
+  font-weight: 800;
+}
+
+.brand strong,
+.brand span {
+  display: block;
+}
+
+.brand span {
+  color: #aeb8c2;
+  font-size: 0.9rem;
+}
+
+.sidebar nav {
+  display: grid;
+  gap: 8px;
+}
+
+.sidebar button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #d6dee6;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sidebar button:hover,
+.sidebar button:focus-visible,
+.sidebar button.active {
+  background: #1f3647;
+  color: #ffffff;
+  outline: none;
+}
+
+.content {
+  padding: 24px clamp(18px, 3vw, 42px) 42px;
+}
+
+.topbar,
+.page-header,
+.panel,
+.catalog-card,
+.service-risk-card,
+.runbook-card,
+.integration-card,
+.workflow-card,
+.stat-card,
+.notice,
+.empty-state {
+  border: 1px solid #d9e1e8;
+  background: #ffffff;
+  border-radius: 8px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+}
+
+.topbar strong,
+.topbar span {
+  display: block;
+}
+
+.topbar span {
+  color: #5c6975;
+  font-size: 0.92rem;
+}
+
+.environment-pill,
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #edf2f7;
+  color: #2f3f4f;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.notice {
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  border-color: #f0c36a;
+  background: #fff9ea;
+}
+
+.page {
+  display: grid;
+  gap: 18px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-end;
+  padding: clamp(20px, 3vw, 32px);
+}
+
+.page-header.compact {
+  align-items: center;
+}
+
+.eyebrow {
+  color: #236192;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin: 0 0 8px;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  max-width: 850px;
+  margin-bottom: 0;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  line-height: 1.04;
+}
+
+h2 {
+  font-size: 1.08rem;
+  margin-bottom: 12px;
+}
+
+h3 {
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.header-action {
+  border-left: 4px solid #2bb3a3;
+  padding: 10px 14px;
+  background: #effaf8;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.stat-grid,
+.card-grid,
+.workflow-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.stat-card {
+  padding: 18px;
+}
+
+.stat-card p {
+  color: #5c6975;
+  margin-bottom: 10px;
+}
+
+.stat-card strong {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.stat-card span,
+.catalog-card span,
+.service-risk-card span,
+.runbook-card span,
+.integration-card span {
+  color: #5c6975;
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap: 18px;
+}
+
+.panel {
+  padding: 18px;
+}
+
+.table,
+.risk-list {
+  display: grid;
+  gap: 10px;
+}
+
+.table-row,
+.risk-item,
+.card-title-row,
+.service-risk-header,
+.factor-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.table-row,
+.risk-item,
+.factor-row {
+  border-top: 1px solid #e5ebf0;
+  padding-top: 10px;
+}
+
+.table-row div span,
+.risk-item div span {
+  display: block;
+}
+
+.risk-badge {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-width: 84px;
+  min-height: 30px;
+  border-radius: 999px;
+  padding: 5px 10px;
+  text-transform: capitalize;
+  font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.risk-low {
+  background: #e8f7ef;
+  color: #126c3f;
+}
+
+.risk-medium {
+  background: #fff4d6;
+  color: #7c5600;
+}
+
+.risk-high {
+  background: #ffe4d6;
+  color: #9a3d00;
+}
+
+.risk-critical {
+  background: #ffe1e7;
+  color: #9f1239;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.toolbar.single {
+  grid-template-columns: minmax(240px, 520px);
+}
+
+.toolbar label {
+  display: grid;
+  gap: 6px;
+  color: #40505f;
+  font-weight: 700;
+}
+
+.toolbar input,
+.toolbar select {
+  min-height: 42px;
+  border: 1px solid #cbd6df;
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: #ffffff;
+}
+
+.experiment-grid,
+.integration-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.catalog-card,
+.service-risk-card,
+.runbook-card,
+.integration-card,
+.workflow-card {
+  padding: 18px;
+}
+
+.catalog-card ul,
+.runbook-card ul,
+.workflow-card ol,
+.service-risk-card ol {
+  padding-left: 20px;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.meta-grid.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+dt {
+  color: #6b7785;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+dd {
+  margin: 4px 0 0;
+  font-weight: 700;
+}
+
+.service-risk-list,
+.runbook-list {
+  display: grid;
+  gap: 14px;
+}
+
+.factor-layout,
+.runbook-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 16px;
+}
+
+.runbook-columns {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.tag-row span {
+  border: 1px solid #d8e1e8;
+  border-radius: 999px;
+  padding: 4px 9px;
+  background: #f8fafc;
+}
+
+.status-failed,
+.severity-critical,
+.severity-high {
+  background: #ffe1e7;
+  color: #9f1239;
+}
+
+.status-partial,
+.severity-medium {
+  background: #fff4d6;
+  color: #7c5600;
+}
+
+.status-passed,
+.status-configured,
+.status-catalog-ready,
+.status-dashboard-ready,
+.status-local-ready {
+  background: #e8f7ef;
+  color: #126c3f;
+}
+
+.empty-state {
+  padding: 28px;
+  text-align: center;
+}
+
+.muted {
+  color: #71808f;
+}
+
+@media (max-width: 980px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+  }
+
+  .sidebar nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stat-grid,
+  .experiment-grid,
+  .integration-grid,
+  .workflow-grid,
+  .two-column,
+  .factor-layout,
+  .runbook-columns,
+  .meta-grid,
+  .meta-grid.four,
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header,
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 620px) {
+  .sidebar nav {
+    grid-template-columns: 1fr;
+  }
+
+  .table-row,
+  .risk-item,
+  .card-title-row,
+  .service-risk-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+}

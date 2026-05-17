@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build-artifacts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Build backend binary
+        working-directory: backend
+        run: |
+          mkdir -p ../dist
+          go test ./...
+          GOOS=linux GOARCH=amd64 go build -o ../dist/platform-chaos-hub-linux-amd64 ./cmd/server
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm install
+          npm run build
+          tar -czf ../dist/frontend-dist.tar.gz dist
+      - name: Build containers
+        run: |
+          docker build -t platform-chaos-hub-backend:${GITHUB_SHA} -f backend/Dockerfile backend
+          docker build -t platform-chaos-hub-frontend:${GITHUB_SHA} -f frontend/Dockerfile frontend
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: platform-chaos-hub
+          path: dist/

@@ -1,0 +1,102 @@
+{
+  "dashboard": {
+    "uid": "platform-chaos-hub",
+    "title": "Platform Chaos Reliability Hub",
+    "schemaVersion": 39,
+    "version": 1,
+    "tags": ["platform", "chaos", "mttd"],
+    "panels": [
+      {
+        "type": "timeseries",
+        "title": "API Request Rate",
+        "datasource": { "type": "prometheus", "uid": "PROM" },
+        "targets": [
+          {
+            "expr": "sum(rate(platform_chaos_hub_http_requests_total[5m])) by (path)",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 7, "w": 12, "x": 0, "y": 0 }
+      },
+      {
+        "type": "timeseries",
+        "title": "API Latency",
+        "datasource": { "type": "prometheus", "uid": "PROM" },
+        "targets": [
+          {
+            "expr": "sum(rate(platform_chaos_hub_http_request_duration_seconds_sum[5m])) by (path) / sum(rate(platform_chaos_hub_http_request_duration_seconds_count[5m])) by (path)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": { "defaults": { "unit": "s" } },
+        "gridPos": { "h": 7, "w": 12, "x": 12, "y": 0 }
+      },
+      {
+        "type": "stat",
+        "title": "Experiment Success Rate",
+        "datasource": { "type": "prometheus", "uid": "PROM" },
+        "targets": [
+          {
+            "expr": "sum(rate(litmus_experiment_finished_total{status=\"Passed\"}[30m])) / sum(rate(litmus_experiment_started_total[30m])) * 100",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": { "defaults": { "unit": "percent" } },
+        "gridPos": { "h": 6, "w": 6, "x": 0, "y": 7 }
+      },
+      {
+        "type": "stat",
+        "title": "Experiment Failure Rate",
+        "datasource": { "type": "prometheus", "uid": "PROM" },
+        "targets": [
+          {
+            "expr": "sum(rate(litmus_experiment_finished_total{status!=\"Passed\"}[30m])) / sum(rate(litmus_experiment_started_total[30m])) * 100",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": { "defaults": { "unit": "percent" } },
+        "gridPos": { "h": 6, "w": 6, "x": 6, "y": 7 }
+      },
+      {
+        "type": "bargauge",
+        "title": "Critical Risk Services",
+        "datasource": { "type": "prometheus", "uid": "PROM" },
+        "targets": [
+          {
+            "expr": "platform_chaos_hub_service_risk_score{level=~\"critical|high\"}",
+            "refId": "E"
+          }
+        ],
+        "gridPos": { "h": 6, "w": 12, "x": 12, "y": 7 }
+      },
+      {
+        "type": "stat",
+        "title": "AI Summary Confidence",
+        "datasource": { "type": "prometheus", "uid": "PROM" },
+        "targets": [
+          {
+            "expr": "platform_chaos_hub_ai_summary_confidence",
+            "refId": "F"
+          }
+        ],
+        "fieldConfig": { "defaults": { "unit": "percentunit" } },
+        "gridPos": { "h": 6, "w": 6, "x": 0, "y": 13 }
+      },
+      {
+        "type": "timeseries",
+        "title": "MTTD Placeholder Trend",
+        "datasource": { "type": "prometheus", "uid": "PROM" },
+        "targets": [
+          {
+            "expr": "platform_incident_mttd_minutes",
+            "refId": "G"
+          }
+        ],
+        "description": "Wire this to incident tooling when available. The platform uses this target to make detection improvement explicit.",
+        "fieldConfig": { "defaults": { "unit": "m" } },
+        "gridPos": { "h": 6, "w": 18, "x": 6, "y": 13 }
+      }
+    ]
+  },
+  "overwrite": true
+}

@@ -1,0 +1,55 @@
+groups:
+  - name: platform-chaos-hub
+    rules:
+      - alert: HighChaosFailureRate
+        expr: |
+          sum(rate(litmus_experiment_finished_total{status!="Passed"}[15m]))
+          /
+          clamp_min(sum(rate(litmus_experiment_started_total[15m])), 1) > 0.25
+        for: 10m
+        labels:
+          severity: warning
+          team: platform-engineering
+        annotations:
+          summary: High chaos experiment failure rate
+          description: More than 25% of chaos experiments failed or did not pass in the last 15 minutes.
+
+      - alert: CriticalServiceUnderExperiment
+        expr: platform_chaos_hub_service_risk_score{level="critical"} >= 80
+        for: 5m
+        labels:
+          severity: critical
+          team: platform-engineering
+        annotations:
+          summary: Critical service risk score during experiment
+          description: A critical risk service requires owner acknowledgement and rollback threshold review.
+
+      - alert: MissingOwnerMetadata
+        expr: platform_chaos_hub_service_risk_score >= 60
+        for: 30m
+        labels:
+          severity: warning
+          team: platform-engineering
+        annotations:
+          summary: High-risk service needs metadata review
+          description: Review Backstage ownership and escalation metadata for high-risk services.
+
+      - alert: MissingRunbook
+        expr: platform_chaos_hub_service_risk_score >= 60
+        for: 30m
+        labels:
+          severity: warning
+          team: platform-engineering
+        annotations:
+          summary: High-risk service may need runbook coverage
+          description: Confirm runbook links before approving the next chaos experiment.
+
+      - alert: HighMTTDTrend
+        expr: platform_incident_mttd_minutes > 20
+        for: 30m
+        labels:
+          severity: warning
+          team: platform-engineering
+        annotations:
+          summary: MTTD is above target
+          description: Incident detection time is above the platform target. Review dashboards, alerts and AI summary handoff.

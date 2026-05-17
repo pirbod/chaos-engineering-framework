@@ -1,0 +1,66 @@
+replicaCount: 1
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+backend:
+  image:
+    repository: ghcr.io/pirbod/platform-chaos-hub-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8080
+  env:
+    AI_PROVIDER: local
+    VERSION: "0.1.0"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+
+frontend:
+  image:
+    repository: ghcr.io/pirbod/platform-chaos-hub-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8080
+  env:
+    VITE_API_BASE_URL: http://platform-chaos-hub-backend:8080
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: platform-chaos.local
+      paths:
+        - path: /
+          pathType: Prefix
+          service: frontend
+  tls: []
+
+networkPolicy:
+  enabled: true
+
+serviceMonitor:
+  enabled: false
+  labels: {}
+  interval: 30s

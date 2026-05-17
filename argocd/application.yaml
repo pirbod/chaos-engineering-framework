@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-chaos-hub
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: platform-chaos-hub
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/pirbod/chaos-engineering-framework.git'
+    path: 'helm/platform-chaos-hub'
+    targetRevision: main
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: platform-chaos
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

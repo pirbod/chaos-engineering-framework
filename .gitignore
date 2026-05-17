@@ -1,0 +1,14 @@
+.env
+.env.local
+.DS_Store
+node_modules/
+dist/
+coverage/
+*.log
+tmp/
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+backend/bin/
+frontend/.vite/

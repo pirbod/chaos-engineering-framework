@@ -1,0 +1,38 @@
+---
+- name: Bootstrap Platform Chaos Reliability Hub prerequisites
+  hosts: platform
+  gather_facts: false
+  vars:
+    required_cli_tools:
+      - git
+      - docker
+      - kubectl
+      - helm
+      - terraform
+      - ansible
+  tasks:
+    - name: Check required CLI tools
+      ansible.builtin.command: "which {{ item }}"
+      changed_when: false
+      failed_when: false
+      register: tool_checks
+      loop: "{{ required_cli_tools }}"
+
+    - name: Show missing tools
+      ansible.builtin.debug:
+        msg: "Missing CLI tool: {{ item.item }}"
+      when: item.rc != 0
+      loop: "{{ tool_checks.results }}"
+
+    - name: Validate namespace variable
+      ansible.builtin.assert:
+        that:
+          - platform_namespace | length > 0
+        fail_msg: "platform_namespace must be set."
+
+    - name: Print next bootstrap steps
+      ansible.builtin.debug:
+        msg:
+          - "Install missing tools if any were reported."
+          - "Run: helm upgrade --install platform-chaos-hub ../helm/platform-chaos-hub --namespace {{ platform_namespace }} --create-namespace"
+          - "Import monitoring/grafana/platform-chaos-dashboard.json into Grafana."
