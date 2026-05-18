@@ -15,6 +15,11 @@ resource "azurerm_dev_test_virtual_network" "this" {
   name                = "${var.prefix}-${var.environment}-vnet"
   resource_group_name = azurerm_resource_group.this.name
   lab_name            = azurerm_dev_test_lab.this.name
-  location            = azurerm_resource_group.this.location
-  address_space       = var.address_space
+  description         = "DevTest Lab virtual network for isolated chaos engineering demos."
+  tags                = merge(var.tags, { environment = var.environment })
+
+  subnet {
+    use_in_virtual_machine_creation = "Allow"
+    use_public_ip_address           = "Deny"
+  }
 }
