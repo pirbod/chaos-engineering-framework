@@ -133,6 +133,10 @@ The platform makes MTTD improvement explicit through:
 - alert rules for failure rate, critical risk, missing ownership, missing runbooks and high MTTD
 - runbooks designed for fast acknowledgement, rollback and evidence capture
 
+### Field teardown: reducing alert noise by 35%
+
+For a production-derived example of tuning notification semantics without weakening detection, see [How I Cut Alert Noise 35% Without Muting Failures](docs/alert-noise-reduction-35-percent.md). It covers the actual grouping keys, `2m` group wait, `30m` group interval, scoped `720h` repeat interval, validation approach, and the trade-offs behind the change.
+
 ## Security Model
 
 - No real secrets are required or committed.
